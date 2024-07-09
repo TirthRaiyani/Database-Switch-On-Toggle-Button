@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle, #e0e0e0, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 2em;
+            border-radius: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toggle-button-container {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+        }
+
+        button {
+            padding: 0.8em 1.5em;
+            background: linear-gradient(to right, #ff6f61, #ff3d3d);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #ff3d3d, #ff6f61);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 1em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-card {
+            background: #fff;
+            padding: 1.5em;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            width: 20%;
+            text-align: center;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            display: block;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0) 80%);
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            border-radius: 50%;
+            z-index: 0;
+            transition: all 0.3s ease;
+        }
+
+        .user-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-card:hover::before {
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0) 80%);
+        }
+
+        .user-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .user-card h4 {
+            margin: 0;
+            color: #343a40;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .user-card p {
+            margin: 0.5em 0 0;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .user-card:nth-child(even) {
+            background: linear-gradient(135deg, #a2c2e6, #4a6fa5);
+            color: #fff;
+        }
+
+        .user-card:nth-child(odd) {
+            background: linear-gradient(135deg, #f5a623, #d43f00);
+            color: #fff;
+        }
+
+        .user-card h4,
+        .user-card p {
+            z-index: 1;
+        }
+
+        .header {
+            margin-bottom: 1em;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .header h3 {
+            margin: 0.2em 0;
+            color: #777;
+            font-size: 1.5em;
+        }
+
+        .register-button-container {
+            margin-top: 1em;
+        }
+
+        .register-button {
+            padding: 0.8em 1.5em;
+            background: linear-gradient(to right, #4caf50, #43a047);
+            border: none;
+            border-radius: 30px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .register-button:hover {
+            background: linear-gradient(to right, #329637, #4caf50);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard, Tirth</h1>
+            <h3>Last 5 Users</h3>
+        </div>
+        <div class="toggle-button-container">
+            <button id="toggleButton">
+                <%= isMongo ? 'Switch to MySQL' : 'Switch to MongoDB' %>
+            </button>
+        </div>
+        <div class="user-cards">
+            <% users.forEach(user=> { %>
+                <div class="user-card">
+                    <div class="user-card-content">
+                        <h4>
+                            <%= user.username %>
+                        </h4>
+                        <p>Joined on <%= new Date(user.createdAt).toLocaleDateString() %>
+                        </p>
+                    </div>
+                </div>
+                <% }) %>
+        </div>
+        <div class="register-button-container">
+            <a href="/register" class="register-button">Register</a>
+        </div>
+        <script>
+            document.getElementById('toggleButton').addEventListener('click', async () => {
+                await fetch('/api/toggle/toggle', { method: 'POST' });
+                location.reload();
+            });
+        </script>
+    </div>
+</body>
+
+</html>
